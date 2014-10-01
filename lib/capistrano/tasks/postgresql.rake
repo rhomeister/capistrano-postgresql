@@ -26,7 +26,7 @@ namespace :postgresql do
 
   # undocumented, for a reason: drops database. Use with care!
   task :remove_all do
-    on roles :app do
+    on release_roles :all do
       if test "[ -e #{database_yml_file} ]"
         execute :rm, database_yml_file
       end
@@ -86,7 +86,8 @@ namespace :postgresql do
       database_yml_contents = download! archetype_database_yml_file
     end
 
-    on roles :app do
+    on release_roles :all do
+      next if test "[ -e #{database_yml_file} ]"
       execute :mkdir, '-pv', shared_path.join('config')
       upload! StringIO.new(database_yml_contents), database_yml_file
     end
